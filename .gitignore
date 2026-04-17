@@ -1,0 +1,49 @@
+*.log
+.DS_Store
+
+# Environment & secrets (never commit real credentials)
+.env
+.env.*
+!.env.example
+!.env.example.*
+.phpactor.json
+/auth.json
+
+# Composer / PHP
+/vendor
+composer.phar
+_ide_helper.php
+.phpunit.result.cache
+/.phpunit.cache
+
+# IDE & editors
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+.php-cs-fixer.cache
+
+# Laravel
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+
+# Local databases
+/database/*.sqlite
+/database/*.sqlite-journal
+
+# Node / frontend
+/node_modules
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vagrant / Homestead
+Homestead.json
+Homestead.yaml
+
+# OS
+Thumbs.db
