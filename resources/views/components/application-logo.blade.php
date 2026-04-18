@@ -1,6 +1,8 @@
 <img
     src="{{ asset('images/gorur-logo.png') }}"
     alt="{{ config('app.name') }}"
+    width="36"
+    height="36"
     loading="lazy"
     decoding="async"
     {{ $attributes->merge([
