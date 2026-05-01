@@ -16,6 +16,8 @@ use Illuminate\Support\Str;
     'starts_at',
     'ends_at',
     'is_published',
+    'going_count',
+    'interested_count',
 ])]
 class Event extends Model
 {

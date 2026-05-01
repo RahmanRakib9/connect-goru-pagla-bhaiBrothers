@@ -1,10 +1,25 @@
 <?php
 
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\EventResponseController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
+// ─── Public routes (no login required) ───────────────────────────────────────
+
+// Home page: show all upcoming published events
+Route::get('/', [HomeController::class, 'showUpcomingEvents'])->name('home');
+
+// "Going" button: increment the going counter for a specific event
+Route::post('/events/{event}/going', [EventResponseController::class, 'markAsGoing'])
+    ->name('events.going');
+
+// "Interested" button: increment the interested counter for a specific event
+Route::post('/events/{event}/interested', [EventResponseController::class, 'markAsInterested'])
+    ->name('events.interested');
+
+// ─── Admin routes ─────────────────────────────────────────────────────────────
 
 Route::get('/dashboard', function () {
     return redirect()->route('admin.events.index');
