@@ -34,22 +34,50 @@ class Event extends Model
         ];
     }
 
-    public static function uniqueSlugFromTitle(string $title, ?int $ignoreId = null): string
+    /**
+     * Generate a unique URL-friendly slug from the event title.
+     *
+     * For example "Spring Market" becomes "spring-market".
+     * If that slug is already taken, we try "spring-market-1", "spring-market-2", etc.
+     *
+     * The $excludeEventId parameter lets us skip the current event's own row
+     * when checking for duplicates during an update (otherwise an event would
+     * always collide with itself).
+     */
+    public static function generateUniqueSlugFromTitle(string $title, ?int $excludeEventId = null): string
     {
-        $base = Str::slug($title);
-        if ($base === '') {
-            $base = 'event';
+        // Convert the title to a URL-safe string, e.g. "Spring Market!" → "spring-market"
+        $baseSlug = Str::slug($title);
+
+        // If the title produced an empty slug (e.g. only special characters), use a safe fallback
+        if ($baseSlug === '') {
+            $baseSlug = 'event';
         }
 
-        $slug = $base;
-        $n = 1;
-        while (static::query()
-            ->where('slug', $slug)
-            ->when($ignoreId !== null, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()) {
-            $slug = $base.'-'.$n++;
+        // Start by trying the plain slug with no number suffix
+        $currentSlug = $baseSlug;
+        $duplicateCounter = 1;
+
+        // Keep trying slugs until we find one that is not already in the database
+        while (true) {
+            $slugAlreadyExists = static::query()
+                ->where('slug', $currentSlug)
+                ->when($excludeEventId !== null, function ($query) use ($excludeEventId) {
+                    // Ignore the event we are currently editing so it does not block itself
+                    $query->where('id', '!=', $excludeEventId);
+                })
+                ->exists();
+
+            if (! $slugAlreadyExists) {
+                // This slug is available — stop searching
+                break;
+            }
+
+            // Slug is taken — append a number and try again (e.g. "spring-market-1")
+            $currentSlug = $baseSlug . '-' . $duplicateCounter;
+            $duplicateCounter++;
         }
 
-        return $slug;
+        return $currentSlug;
     }
 }

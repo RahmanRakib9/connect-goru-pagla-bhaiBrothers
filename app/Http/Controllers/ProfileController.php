@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Show the profile edit form, pre-filled with the currently logged-in user's data.
      */
     public function edit(Request $request): View
     {
@@ -22,12 +22,18 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Save the profile changes submitted from the edit form.
+     *
+     * After saving, we redirect back to the profile page with a success flash message.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        // Copy the validated form fields onto the user model (name, email, etc.)
         $request->user()->fill($request->validated());
 
+        // If the user changed their email address, reset their email verification status.
+        // The new address is unverified until they click the confirmation link.
+        // isDirty('email') returns true when the email value has been changed but not yet saved.
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
@@ -38,20 +44,26 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Permanently delete the logged-in user's account.
+     *
+     * Requires the user to confirm their password first to prevent accidents.
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Validate that the submitted password matches the account's current password.
+        // 'userDeletion' is the error bag name so the error appears in the right place on the form.
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        $userToDelete = $request->user();
 
+        // Log the user out before deleting, so their session is invalidated cleanly
         Auth::logout();
 
-        $user->delete();
+        $userToDelete->delete();
 
+        // Destroy the session data and generate a new CSRF token for safety
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
