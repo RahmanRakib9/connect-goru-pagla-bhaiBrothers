@@ -4,8 +4,10 @@
 
 @section('content')
 
-    <h1 class="text-2xl font-bold text-gray-800 mb-2">Upcoming Events</h1>
-    <p class="text-gray-500 mb-8">Browse the latest livestock market events happening near you.</p>
+    <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Upcoming Events</h1>
+        <p class="text-gray-500">Browse the latest livestock market events happening near you.</p>
+    </div>
 
     {{-- Show a friendly message when there are no published upcoming events --}}
     @if ($upcomingEvents->isEmpty())

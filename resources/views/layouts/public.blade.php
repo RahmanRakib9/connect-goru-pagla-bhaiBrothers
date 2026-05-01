@@ -20,7 +20,7 @@
 
         <!-- Top navigation bar -->
         <header class="bg-white shadow-sm">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-3">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center gap-3">
                 <a href="/">
                     <x-application-logo class="!h-10 !w-10" />
                 </a>
