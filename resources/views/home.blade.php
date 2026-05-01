@@ -15,7 +15,7 @@
     @endif
 
     {{-- Loop through each upcoming event and render a card --}}
-    <div class="grid grid-cols-1 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         @foreach ($upcomingEvents as $event)
 
             {{--
@@ -27,7 +27,7 @@
                 $visitorResponse = session($sessionKey); // null | 'going' | 'interested'
             @endphp
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 min-w-0 flex flex-col h-full">
 
                 {{-- Event title --}}
                 <h2 class="text-xl font-semibold text-gray-800 mb-1">{{ $event->title }}</h2>
@@ -55,7 +55,7 @@
                 @endif
 
                 {{-- Going and Interested buttons with their current counts --}}
-                <div class="flex flex-wrap gap-3 items-center">
+                <div class="flex flex-wrap gap-3 items-center mt-auto pt-4">
 
                     {{--
                         "Going" button.
